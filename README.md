@@ -1,2 +1,2 @@
-# ECG-CYCU-Project
-Objective: To build a model that can classify different types of ECG Signals
+# 🚀 ECG-CYCU-Project
+This repository contains the working project files in partial fulfillment of the requirements for the CYCU project.
