@@ -1,1 +1,10 @@
 archive/
+ecg_data/
+ecg_5c/
+ecg_15c/
+logs/
+model_15.h5
+15_class_signal_test_256_1D_for_all_data_high_8_2.npy
+15_class_signal_train_256_1D_for_all_data_high_8_2.npy
+15_class_symbol_test_256_for_all_data_high_8_2.npy
+15_class_symbol_train_256_for_all_data_high_8_2.npy

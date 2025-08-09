@@ -19,50 +19,59 @@ RATIO = 0.2
 # the random seed
 RANDOM_SEED = 42
 BATCH_SIZE = 128
-NUM_EPOCHS = 5
+NUM_EPOCHS = 10
 
 
 # build the CNN model
 def build_model():
-    newModel = tf.keras.models.Sequential([
+    model = tf.keras.Sequential([
         tf.keras.layers.InputLayer(input_shape=(300,)),
-        # reshape the tensor with shape (batch_size, 300) to (batch_size, 300, 1)
-        tf.keras.layers.Reshape(target_shape=(300, 1)),
-        # the first convolution layer, 4 21x1 convolution kernels, output shape (batch_size, 300, 4)
-        tf.keras.layers.Conv1D(filters=4, kernel_size=21, strides=1, padding='SAME', activation='relu'),
-        # the first pooling layer, max pooling, pooling size=3 , stride=2, output shape (batch_size, 150, 4)
-        tf.keras.layers.MaxPool1D(pool_size=3, strides=2, padding='SAME'),
-        # the second convolution layer, 16 23x1 convolution kernels, output shape (batch_size, 150, 16)
-        tf.keras.layers.Conv1D(filters=16, kernel_size=23, strides=1, padding='SAME', activation='relu'),
-        # the second pooling layer, max pooling, pooling size=3, stride=2, output shape (batch_size, 75, 16)
-        tf.keras.layers.MaxPool1D(pool_size=3, strides=2, padding='SAME'),
-        # the third convolution layer, 32 25x1 convolution kernels, output shape (batch_size, 75, 32)
-        tf.keras.layers.Conv1D(filters=32, kernel_size=25, strides=1, padding='SAME', activation='relu'),
-        # the third pooling layer, average pooling, pooling size=3, stride=2, output shape (batch_size, 38, 32)
-        tf.keras.layers.AvgPool1D(pool_size=3, strides=2, padding='SAME'),
-        # the fourth convolution layer, 64 27x1 convolution kernels, output shape (batch_size, 38, 64)
-        tf.keras.layers.Conv1D(filters=64, kernel_size=27, strides=1, padding='SAME', activation='relu'),
-        # flatten layer, for the next fully connected layer, output shape (batch_size, 38*64)
-        tf.keras.layers.Flatten(),
-        # fully connected layer, 128 nodes, output shape (batch_size, 128)
-        tf.keras.layers.Dense(128, activation='relu'),
-        # Dropout layer, dropout rate = 0.2
-        tf.keras.layers.Dropout(rate=0.2),
-        # fully connected layer, 5 nodes (number of classes), output shape (batch_size, 5)
-        tf.keras.layers.Dense(5, activation='softmax')
+        tf.keras.layers.Reshape((300, 1)),
+
+        # Block 1
+        tf.keras.layers.Conv1D(32, kernel_size=7, padding='same', kernel_regularizer=tf.keras.regularizers.l2(1e-4)),
+        tf.keras.layers.BatchNormalization(),
+        tf.keras.layers.ReLU(),
+        tf.keras.layers.MaxPool1D(pool_size=2, strides=2),
+
+        # Block 2
+        tf.keras.layers.Conv1D(64, kernel_size=5, padding='same', kernel_regularizer=tf.keras.regularizers.l2(1e-4)),
+        tf.keras.layers.BatchNormalization(),
+        tf.keras.layers.ReLU(),
+        tf.keras.layers.MaxPool1D(pool_size=2, strides=2),
+
+        # Block 3
+        tf.keras.layers.Conv1D(128, kernel_size=5, padding='same', kernel_regularizer=tf.keras.regularizers.l2(1e-4)),
+        tf.keras.layers.BatchNormalization(),
+        tf.keras.layers.ReLU(),
+        tf.keras.layers.Dropout(0.3),
+
+        # Block 4
+        tf.keras.layers.Conv1D(256, kernel_size=3, padding='same', kernel_regularizer=tf.keras.regularizers.l2(1e-4)),
+        tf.keras.layers.BatchNormalization(),
+        tf.keras.layers.ReLU(),
+        tf.keras.layers.Dropout(0.3),
+
+        # Global Pooling instead of Flatten
+        tf.keras.layers.GlobalAveragePooling1D(),
+
+        # Fully connected layers
+        tf.keras.layers.Dense(128, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(1e-4)),
+        tf.keras.layers.Dropout(0.4),
+        tf.keras.layers.Dense(15, activation='softmax')
     ])
-    return newModel
+    return model
 
 
 def main():
     # X_train,y_train is the training set
     # X_test,y_test is the test set
     X_train, X_test, y_train, y_test = load_data(RATIO, RANDOM_SEED)
-    '''
-    np.save("./signal_train.npy", X_train)
-    np.save("./signal_test.npy", X_test)
-    np.save("./symbol_train.npy", y_train)
-    np.save("./symbol_test.npy", y_test)'''
+
+    np.save("./15_class_signal_train_256_1D_for_all_data_high_8_2.npy", X_train)
+    np.save("./15_class_signal_test_256_1D_for_all_data_high_8_2.npy", X_test)
+    np.save("./15_class_symbol_train_256_for_all_data_high_8_2.npy", y_train)
+    np.save("./15_class_symbol_test_256_for_all_data_high_8_2.npy", y_test)
 
     
     if os.path.exists(model_path):
