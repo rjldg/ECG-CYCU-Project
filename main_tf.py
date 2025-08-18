@@ -12,7 +12,7 @@ project_path = "./"
 # must be a subdirectory of the directory specified when starting the web application
 # it is recommended to use the date time as the subdirectory name
 log_dir = project_path + "logs/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-model_path = project_path + "ecg_model.h5"
+model_path = project_path + "jd-1d_ecg_model.h5"
 
 # the ratio of the test set
 RATIO = 0.2
